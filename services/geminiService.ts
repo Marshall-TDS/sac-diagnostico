@@ -2,7 +2,13 @@ import { GoogleGenAI } from "@google/genai";
 import { SACFormData } from "../types";
 
 // Initialize Gemini Client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey) {
+  throw new Error("A variável de ambiente VITE_GEMINI_API_KEY não está definida.");
+}
+
+const ai = new GoogleGenAI({ apiKey });
 
 export const generateSACAnalysis = async (data: SACFormData): Promise<string> => {
   const prompt = `
