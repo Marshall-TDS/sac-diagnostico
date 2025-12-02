@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { SACFormData } from './types';
 import { generateSACAnalysis } from './services/geminiService';
-import { ArrowRight, ArrowLeft, Send, CheckCircle, Loader2, BarChart3, Zap, Plus, Printer, Copy, Check, Mail } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Send, CheckCircle, Loader2, BarChart3, Zap, Plus, Printer, Mail } from 'lucide-react';
 
 // Initial state
 const initialFormData: SACFormData = {
@@ -523,20 +523,7 @@ const QuestionGroup: React.FC<{ number: number, text: string, children: React.Re
 );
 
 const AnalysisView: React.FC<{ result: string | null, onReset: () => void }> = ({ result, onReset }) => {
-  const [copySuccess, setCopySuccess] = useState(false);
-
   if (!result) return null;
-
-  // Function to copy text to clipboard
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(result);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
-  };
 
   return (
     <div className="animate-fadeIn space-y-6 relative">
@@ -555,19 +542,19 @@ const AnalysisView: React.FC<{ result: string | null, onReset: () => void }> = (
           Diagnóstico Concluído
         </h2>
         <div className="flex flex-wrap gap-3">
-           <button 
-            onClick={handleCopy}
+          <button 
+            onClick={() => window.print()}
             className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
           >
-            {copySuccess ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-            {copySuccess ? "Copiado!" : "Copiar Texto"}
+            <Printer className="w-4 h-4 mr-2" />
+            Baixar PDF
           </button>
           <button 
             onClick={() => window.print()}
             className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
           >
             <Printer className="w-4 h-4 mr-2" />
-            Imprimir PDF
+            Imprimir
           </button>
         </div>
       </div>
