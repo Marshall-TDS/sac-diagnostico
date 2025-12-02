@@ -575,16 +575,69 @@ const AnalysisView: React.FC<{ result: string | null, onReset: () => void }> = (
       <div className="prose prose-lg max-w-none text-gray-700 print:prose-sm print:text-black">
         {/* Render simple markdown-like structure */}
         {result.split('\n').map((line, i) => {
-          if (line.startsWith('## ')) {
-            return <h3 key={i} className="text-xl font-bold mt-6 mb-3 pb-1 border-b border-gray-200" style={{ color: COLORS.gold }}>{line.replace('## ', '')}</h3>;
-          }
-          if (line.startsWith('- ')) {
-            return <li key={i} className="ml-4 list-disc my-1">{line.replace('- ', '')}</li>;
-          }
-          if (line.trim() === '') {
+          const trimmed = line.trim();
+
+          if (!trimmed) {
             return <br key={i} />;
           }
-          return <p key={i} className="mb-2 leading-relaxed">{line}</p>;
+
+          // Headings: #, ##, ### ...
+          if (trimmed.startsWith('#')) {
+            const match = trimmed.match(/^(#+)\s+(.*)$/);
+            if (match) {
+              const level = match[1].length;
+              const text = match[2];
+
+              if (level === 1) {
+                return (
+                  <h1
+                    key={i}
+                    className="text-3xl font-bold mt-6 mb-3"
+                    style={{ color: COLORS.black }}
+                  >
+                    {text}
+                  </h1>
+                );
+              }
+
+              if (level === 2) {
+                return (
+                  <h2
+                    key={i}
+                    className="text-2xl font-bold mt-6 mb-3 pb-1 border-b border-gray-200"
+                    style={{ color: COLORS.gold }}
+                  >
+                    {text}
+                  </h2>
+                );
+              }
+
+              return (
+                <h3
+                  key={i}
+                  className="text-xl font-semibold mt-4 mb-2"
+                  style={{ color: COLORS.black }}
+                >
+                  {text}
+                </h3>
+              );
+            }
+          }
+
+          // Bullet list
+          if (trimmed.startsWith('- ')) {
+            return (
+              <li key={i} className="ml-4 list-disc my-1">
+                {trimmed.replace('- ', '')}
+              </li>
+            );
+          }
+
+          return (
+            <p key={i} className="mb-2 leading-relaxed">
+              {line}
+            </p>
+          );
         })}
       </div>
 
